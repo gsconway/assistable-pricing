@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
 // ---------- easy-to-edit numbers (all USD) ----------
-const SETUP_FIRST_MONTH = 12000; // $ first month
+const SETUP_FIRST_MONTH = 11500; // $ first month
 const MONTHLY_AFTER = 8000;      // $ per month, months 2 & 3
 const ACCEL_PER_MONTH = 2000;    // $ per acceleration module / month
-const UPFRONT_DISCOUNT = 0.075;  // 7.5% off if all 3 months paid upfront (ACH only)
+const UPFRONT_DISCOUNT = 0.05;   // 5% off if all 3 months paid upfront (ACH only)
 
 const CORE_MODULES = [
   "Positioning & Messaging (+ Brand Bible)",
@@ -162,8 +162,10 @@ export default function PricingSheet() {
         <h1 style={S.h1}>How we'd work together - and where it can go.</h1>
         <p style={S.sub}>
           Three levels of engagement, each building on the last. The full core build sits
-          inside every level - what changes is how hands-on I am. Right now I'm the
-          GTM Engineer: I design and build the whole machine, then hand you the keys.
+          inside every level - what changes is how hands-on I am. Right now I'm playing the
+          GTM Engineer role: a focused, self-contained project to build the content engine.
+          It's deliberately a discrete piece of work - we prove it out, then review and expand
+          into the deeper roles once it's working.
         </p>
       </header>
 
@@ -291,7 +293,7 @@ export default function PricingSheet() {
             <div style={{ ...S.upfrontTick, ...(upfront ? S.upfrontTickOn : {}) }}>{upfront ? <Check c="#14110E" /> : null}</div>
             <div>
               <div style={S.upfrontName}>Pay all 3 months upfront</div>
-              <div style={S.upfrontNote}>7.5% off - bank transfer (ACH) only</div>
+              <div style={S.upfrontNote}>5% off - bank transfer (ACH) only</div>
             </div>
           </div>
           <div style={S.upfrontRight}>
