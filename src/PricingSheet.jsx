@@ -4,7 +4,7 @@ import React, { useState } from "react";
 const SETUP_FIRST_MONTH = 12000; // $ first month
 const MONTHLY_AFTER = 8000;      // $ per month, months 2 & 3
 const ACCEL_PER_MONTH = 2000;    // $ per acceleration module / month
-const UPFRONT_DISCOUNT = 0.075;   // 7.5% off if all 3 months paid upfront (ACH/bank transfer only)
+const UPFRONT_DISCOUNT = 0.075;  // 7.5% off if all 3 months paid upfront (ACH only)
 
 const CORE_MODULES = [
   "Positioning & Messaging (+ Brand Bible)",
@@ -26,16 +26,23 @@ const LEVELS = [
     tag: "Where I am now",
     money: "Cash only - no equity",
     color: "#C8452F",
-    doing: [
+    metrics: [
+      { label: "Commitment", value: "20+ hrs / week" },
+      { label: "Equity", value: "Not included" },
+      { label: "Structure", value: "Project + retainer" },
+    ],
+    cadence: { value: "1-2 check-ins per week", sub: "Focused bursts, not living in your Slack", dots: 2 },
+    own: [
       "Design and build the whole engine",
-      "Set up the tools and wire the flow",
-      "Write the playbooks and templates",
+      "Set up the tools and wire the flow into HubSpot",
+      "Write the playbooks and outreach templates",
       "Hand it over so your team can run it",
     ],
-    notDoing: [
-      "Not running your day-to-day",
-      "Not making ad creative",
-      "Not a headcount on your team",
+    need: [
+      "Call recordings, hit list, founder interview",
+      "Fund the tools and any ad spend",
+      "A technical person for the HubSpot wiring",
+      "Your team creates content + closes the leads",
     ],
   },
   {
@@ -45,15 +52,23 @@ const LEVELS = [
     tag: "The next step, if it's working",
     money: "Slightly lower cash + some equity",
     color: "#D99A2B",
-    doing: [
+    metrics: [
+      { label: "Commitment", value: "Part-time, ongoing" },
+      { label: "Equity", value: "Small stake" },
+      { label: "Structure", value: "Retainer + equity" },
+    ],
+    cadence: { value: "2-3 check-ins per week", sub: "Steering it week to week alongside you", dots: 3 },
+    own: [
       "Everything in the build, plus:",
-      "Steer it week to week",
-      "Optimise off the data",
+      "Steer and optimise it week to week",
+      "Own the growth reporting",
       "Skin in the game - I share the upside",
     ],
-    notDoing: [
-      "Still part-time, still light on your team",
-      "Your team still closes the deals",
+    need: [
+      "Budget committed for the run period",
+      "A regular slot in your week for me",
+      "Your team still owns closing the deals",
+      "Equity terms agreed up front",
     ],
   },
   {
@@ -64,14 +79,23 @@ const LEVELS = [
     tag: "Where this could go - not now",
     money: "Lower cash + more equity",
     color: "#9A9284",
-    doing: [
-      "A dedicated growth leader in the business",
-      "Owns the number end-to-end",
+    metrics: [
+      { label: "Commitment", value: "Full-time" },
+      { label: "Equity", value: "Meaningful" },
+      { label: "Structure", value: "Negotiated" },
+    ],
+    cadence: { value: "Daily", sub: "In the building - a real leadership seat", dots: 5 },
+    own: [
+      "End-to-end growth, owned",
+      "Build and run the growth team",
+      "Board & investor reporting",
       "Meaningful equity - properly invested",
     ],
-    notDoing: [
+    need: [
+      "A formal role with real authority",
+      "Funding in place to build the team",
+      "A seat at the leadership table",
       "Not what I'm offering today",
-      "A conversation for much later",
     ],
   },
 ];
@@ -84,11 +108,6 @@ const Check = ({ c = "#2E7D5B" }) => (
     <path d="M5 12.5l4.5 4.5L19 7" stroke={c} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
-const Cross = ({ c = "#B4A99A" }) => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M6 6l12 12M18 6L6 18" stroke={c} strokeWidth="2.2" strokeLinecap="round" />
-  </svg>
-);
 const Plus = ({ c = "currentColor" }) => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path d="M12 5v14M5 12h14" stroke={c} strokeWidth="2.4" strokeLinecap="round" />
@@ -98,6 +117,18 @@ const Pin = ({ c = "#fff" }) => (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z" fill={c} />
     <circle cx="12" cy="9" r="2.5" fill="#C8452F" />
+  </svg>
+);
+const OwnIcon = ({ c = "#C8452F" }) => (
+  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <circle cx="8" cy="8" r="7" stroke={c} strokeWidth="1.4" />
+    <path d="M5 8l2 2 4-4" stroke={c} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+const NeedIcon = ({ c = "#B0733C" }) => (
+  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <circle cx="8" cy="8" r="7" stroke={c} strokeWidth="1.4" />
+    <path d="M8 5v4M8 11v.5" stroke={c} strokeWidth="1.4" strokeLinecap="round" />
   </svg>
 );
 const Repeat = ({ c = "#D99A2B" }) => (
@@ -128,11 +159,11 @@ export default function PricingSheet() {
 
       <header style={S.header}>
         <div style={S.eyebrow}>ASSISTABLE - ENTERPRISE GROWTH ENGINE</div>
-        <h1 style={S.h1}>How I'd work with you - and where that can go.</h1>
+        <h1 style={S.h1}>How we'd work together - and where it can go.</h1>
         <p style={S.sub}>
-          Same engine, three depths of involvement. The full core build sits inside
-          every level - what changes is how hands-on I am, and how we split cash vs.
-          equity. Right now I'm the GTM Engineer: I build the machine, cash only.
+          Three levels of engagement, each building on the last. The full core build sits
+          inside every level - what changes is how hands-on I am. Right now I'm the
+          GTM Engineer: I design and build the whole machine, then hand you the keys.
         </p>
       </header>
 
@@ -150,29 +181,62 @@ export default function PricingSheet() {
       </div>
 
       {/* THE THREE LEVELS */}
-      <div style={S.levelsGrid} className="levels-grid">
+      <div style={S.levelsWrap}>
         {LEVELS.map((lv) => (
-          <div
-            key={lv.id}
-            style={{ ...S.levelCard, ...(lv.here ? S.levelHere : {}), ...(lv.greyed ? S.levelGrey : {}) }}
-          >
-            {lv.here && <div style={S.hereBadge}><Pin /> You are here</div>}
-            <div style={{ ...S.levelTitle, color: lv.greyed ? "#9A9284" : "#14110E" }}>{lv.title}</div>
-            <div style={{ ...S.levelTag, color: lv.color }}>{lv.tag}</div>
-            <div style={{ ...S.moneyPill, ...(lv.greyed ? S.moneyPillGrey : {}) }}>{lv.money}</div>
+          <div key={lv.id} style={{ ...S.levelCard, ...(lv.here ? S.levelHere : {}), ...(lv.greyed ? S.levelGrey : {}) }}>
+            {lv.here && <div style={S.hereBadge}><Pin /> Recommended - start here</div>}
 
-            <div style={S.levelSection}>
-              <div style={S.levelSecLabel}>What I do</div>
-              {lv.doing.map((d, i) => (
-                <div key={i} style={S.levelRow}><Check c={lv.greyed ? "#B4A99A" : "#2E7D5B"} /> <span>{d}</span></div>
+            {/* top row: title + money */}
+            <div style={S.levelTop}>
+              <div>
+                <div style={{ ...S.levelTitle, color: lv.greyed ? "#9A9284" : "#14110E" }}>{lv.title}</div>
+                <div style={{ ...S.levelTag, color: lv.color }}>{lv.tag}</div>
+              </div>
+              <div style={{ ...S.moneyPill, ...(lv.greyed ? S.moneyPillGrey : {}) }}>{lv.money}</div>
+            </div>
+
+            {/* metrics row */}
+            <div style={S.metricsRow}>
+              {lv.metrics.map((m) => (
+                <div key={m.label} style={S.metric}>
+                  <div style={S.metricLabel}>{m.label}</div>
+                  <div style={S.metricValue}>{m.value}</div>
+                </div>
               ))}
             </div>
 
-            <div style={S.levelSection}>
-              <div style={S.levelSecLabel}>What I'm not doing</div>
-              {lv.notDoing.map((d, i) => (
-                <div key={i} style={S.levelRowMute}><Cross /> <span>{d}</span></div>
-              ))}
+            {/* two columns: own / need */}
+            <div style={S.respGrid}>
+              <div>
+                <div style={S.respTitle}><OwnIcon c={lv.greyed ? "#9A9284" : "#C8452F"} /> What I own</div>
+                <ul style={S.respList}>
+                  {lv.own.map((r, i) => (
+                    <li key={i} style={S.respItem}><span style={S.respDot} /> <span>{r}</span></li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div style={S.respTitle}><NeedIcon c={lv.greyed ? "#9A9284" : "#B0733C"} /> What you need in place</div>
+                <ul style={S.respList}>
+                  {lv.need.map((r, i) => (
+                    <li key={i} style={S.respItem}><span style={S.respDot} /> <span>{r}</span></li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* meeting cadence */}
+            <div style={S.cadenceRow}>
+              <div>
+                <div style={S.cadenceLabel}>Meeting cadence</div>
+                <div style={S.cadenceValue}>{lv.cadence.value}</div>
+                <div style={S.cadenceSub}>{lv.cadence.sub}</div>
+              </div>
+              <div style={S.cadenceDots}>
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <span key={i} style={{ ...S.cdot, ...(i < lv.cadence.dots ? { background: lv.color, borderColor: lv.color } : {}) }} />
+                ))}
+              </div>
             </div>
           </div>
         ))}
@@ -214,9 +278,7 @@ export default function PricingSheet() {
           <span style={S.priceVal}>{USD(laterMonth)}</span>
         </div>
         {accelCount > 0 && (
-          <div style={S.priceNote}>
-            Includes {accelCount} Acceleration module{accelCount > 1 ? "s" : ""} at {USD(ACCEL_PER_MONTH)}/mo each
-          </div>
+          <div style={S.priceNote}>Includes {accelCount} Acceleration module{accelCount > 1 ? "s" : ""} at {USD(ACCEL_PER_MONTH)}/mo each</div>
         )}
         <div style={S.priceDivider} />
         <div style={S.priceTotalRow}>
@@ -226,9 +288,7 @@ export default function PricingSheet() {
 
         <button onClick={() => setUpfront((v) => !v)} style={{ ...S.upfrontRow, ...(upfront ? S.upfrontOn : {}) }}>
           <div style={S.upfrontLeft}>
-            <div style={{ ...S.upfrontTick, ...(upfront ? S.upfrontTickOn : {}) }}>
-              {upfront ? <Check c="#14110E" /> : null}
-            </div>
+            <div style={{ ...S.upfrontTick, ...(upfront ? S.upfrontTickOn : {}) }}>{upfront ? <Check c="#14110E" /> : null}</div>
             <div>
               <div style={S.upfrontName}>Pay all 3 months upfront</div>
               <div style={S.upfrontNote}>7.5% off - bank transfer (ACH) only</div>
@@ -247,19 +307,19 @@ export default function PricingSheet() {
         </div>
       </div>
 
-      {/* ENGAGEMENT & PAYMENT */}
+      {/* PAYMENT */}
       <div style={S.payCard}>
         <div style={S.payHead}><Repeat /> <span>How payment works</span></div>
         <div style={S.payGrid}>
-          <div style={S.payItem}>
+          <div>
             <div style={S.payItemTitle}>Billed through GoCardless</div>
             <div style={S.payItemText}>Simple automatic recurring payment - set up once, no chasing invoices.</div>
           </div>
-          <div style={S.payItem}>
+          <div>
             <div style={S.payItemTitle}>Paid in advance</div>
             <div style={S.payItemText}>Each month is paid at the start, before the work - so we both know where we stand.</div>
           </div>
-          <div style={S.payItem}>
+          <div>
             <div style={S.payItemTitle}>3-month minimum</div>
             <div style={S.payItemText}>The engine needs a few weeks to prove the message before it accelerates.</div>
           </div>
@@ -281,7 +341,7 @@ const S = {
   header: { maxWidth: 720, marginBottom: 26 },
   eyebrow: { fontSize: 11, letterSpacing: "0.18em", fontWeight: 600, color: ACCENT, marginBottom: 14 },
   h1: { fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(27px,4.3vw,42px)", lineHeight: 1.05, fontWeight: 600, letterSpacing: "-0.02em", margin: "0 0 14px" },
-  sub: { fontSize: 15.5, lineHeight: 1.55, color: MUTE, maxWidth: 600 },
+  sub: { fontSize: 15.5, lineHeight: 1.55, color: MUTE, maxWidth: 620 },
 
   coreCard: { background: "#fff", border: "1.5px solid " + INK, borderRadius: 14, padding: "18px 20px", marginBottom: 24 },
   coreLabel: { display: "flex", alignItems: "center", gap: 10, fontSize: 14, fontWeight: 700, marginBottom: 14 },
@@ -289,19 +349,34 @@ const S = {
   coreGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px" },
   coreItem: { display: "flex", alignItems: "flex-start", gap: 9, fontSize: 13, lineHeight: 1.4 },
 
-  levelsGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 26 },
-  levelCard: { position: "relative", background: "#FBF8F2", border: "1px solid #E3DBCD", borderRadius: 14, padding: "22px 18px 18px", display: "flex", flexDirection: "column" },
-  levelHere: { background: "#fff", borderColor: ACCENT, boxShadow: "0 2px 0 " + ACCENT },
-  levelGrey: { background: "#F0ECE3", borderStyle: "dashed", opacity: 0.72 },
-  hereBadge: { position: "absolute", top: -11, left: 16, display: "flex", alignItems: "center", gap: 5, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", color: "#fff", background: ACCENT, borderRadius: 6, padding: "4px 9px", textTransform: "uppercase" },
-  levelTitle: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 600, lineHeight: 1.1 },
-  levelTag: { fontSize: 12, fontWeight: 600, marginTop: 5, marginBottom: 10 },
-  moneyPill: { display: "inline-block", fontSize: 11.5, fontWeight: 600, background: "#EFE7D6", border: "1px solid #E0D6C2", borderRadius: 20, padding: "4px 11px", color: "#6B5D3E", alignSelf: "flex-start" },
+  levelsWrap: { display: "flex", flexDirection: "column", gap: 16, marginBottom: 26 },
+  levelCard: { position: "relative", background: "#FBF8F2", border: "1px solid #E3DBCD", borderRadius: 16, padding: "24px 22px 20px" },
+  levelHere: { background: "#fff", borderColor: ACCENT, boxShadow: "0 4px 20px rgba(200,69,47,0.10)" },
+  levelGrey: { background: "#F0ECE3", borderStyle: "dashed", opacity: 0.82 },
+  hereBadge: { position: "absolute", top: -11, left: 22, display: "flex", alignItems: "center", gap: 5, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", color: "#fff", background: ACCENT, borderRadius: 6, padding: "4px 10px", textTransform: "uppercase" },
+  levelTop: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 18 },
+  levelTitle: { fontFamily: "'Fraunces', serif", fontSize: 21, fontWeight: 600, lineHeight: 1.1 },
+  levelTag: { fontSize: 12.5, fontWeight: 600, marginTop: 5 },
+  moneyPill: { fontSize: 11.5, fontWeight: 600, background: "#EFE7D6", border: "1px solid #E0D6C2", borderRadius: 20, padding: "5px 12px", color: "#6B5D3E", flexShrink: 0, whiteSpace: "nowrap" },
   moneyPillGrey: { background: "#E8E3D8", color: "#8A8272" },
-  levelSection: { marginTop: 14 },
-  levelSecLabel: { fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", color: MUTE, textTransform: "uppercase", marginBottom: 8 },
-  levelRow: { display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12.5, lineHeight: 1.4, marginBottom: 6 },
-  levelRowMute: { display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12.5, lineHeight: 1.4, marginBottom: 6, color: MUTE },
+
+  metricsRow: { display: "flex", gap: 10, marginBottom: 20 },
+  metric: { flex: 1, background: "#F2ECE0", borderRadius: 10, padding: "10px 14px" },
+  metricLabel: { fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#A08A5E", marginBottom: 4 },
+  metricValue: { fontSize: 13.5, fontWeight: 600, color: INK },
+
+  respGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22, paddingTop: 18, borderTop: "1px solid #E8E0D2" },
+  respTitle: { display: "flex", alignItems: "center", gap: 7, fontSize: 12.5, fontWeight: 700, marginBottom: 12 },
+  respList: { listStyle: "none", margin: 0, padding: 0 },
+  respItem: { display: "flex", alignItems: "flex-start", gap: 9, fontSize: 12.5, color: MUTE, lineHeight: 1.45, padding: "7px 0", borderBottom: "1px solid #EDE6D8" },
+  respDot: { width: 6, height: 6, borderRadius: "50%", background: "#C9B48E", flexShrink: 0, marginTop: 6 },
+
+  cadenceRow: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginTop: 18, paddingTop: 16, borderTop: "1px solid #E8E0D2" },
+  cadenceLabel: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#A08A5E", marginBottom: 4 },
+  cadenceValue: { fontSize: 14, fontWeight: 600, color: INK },
+  cadenceSub: { fontSize: 11.5, color: MUTE, marginTop: 3 },
+  cadenceDots: { display: "flex", gap: 6, flexShrink: 0 },
+  cdot: { width: 11, height: 11, borderRadius: "50%", background: "#EDE6D8", border: "2px solid #DDD2BE" },
 
   addonWrap: { marginBottom: 24 },
   sectionLabel: { display: "flex", alignItems: "baseline", gap: 10, margin: "0 0 12px" },
@@ -327,8 +402,6 @@ const S = {
   priceDivider: { height: 1, background: "#33302A", margin: "8px 0 14px" },
   priceTotalRow: { display: "flex", justifyContent: "space-between", alignItems: "baseline", fontSize: 14, fontWeight: 600 },
   priceTotal: { fontFamily: "'Fraunces', serif", fontSize: 30, fontWeight: 600, color: "#fff" },
-  priceSmall: { fontSize: 11.5, color: "#8F877A", marginTop: 14, lineHeight: 1.5 },
-
   upfrontRow: { width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, background: "#211E1A", border: "1px dashed #C8952B", borderRadius: 10, padding: "11px 13px", marginTop: 14, cursor: "pointer", transition: "all .15s", textAlign: "left" },
   upfrontOn: { background: "#2A2515", border: "1px solid #D99A2B" },
   upfrontLeft: { display: "flex", alignItems: "center", gap: 10 },
@@ -340,10 +413,11 @@ const S = {
   upfrontWas: { fontSize: 12, color: "#8F877A", textDecoration: "line-through", marginRight: 8 },
   upfrontNow: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 600, color: "#F5D08A" },
   upfrontSave: { fontSize: 12.5, fontWeight: 700, color: "#D99A2B" },
+  priceSmall: { fontSize: 11.5, color: "#8F877A", marginTop: 14, lineHeight: 1.5 },
+
   payCard: { background: "#FBF8F2", border: "1px solid #E3DBCD", borderRadius: 14, padding: "20px 22px", maxWidth: 760 },
   payHead: { display: "flex", alignItems: "center", gap: 9, fontSize: 14, fontWeight: 700, marginBottom: 16 },
   payGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 },
-  payItem: {},
   payItemTitle: { fontSize: 13, fontWeight: 650, marginBottom: 5 },
   payItemText: { fontSize: 12.5, color: MUTE, lineHeight: 1.45 },
 };
@@ -351,7 +425,7 @@ const S = {
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600;700&display=swap');
 * { box-sizing: border-box; }
-@media (max-width: 820px) {
-  .levels-grid { grid-template-columns: 1fr !important; }
+@media (max-width: 720px) {
+  .resp-grid { grid-template-columns: 1fr !important; }
 }
 `;
