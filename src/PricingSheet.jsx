@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // ---------- easy-to-edit numbers (all USD) ----------
 const SETUP_FIRST_MONTH = 13500; // $ first month
 const MONTHLY_AFTER = 9800;      // $ per month, months 2 & 3
-const ACCEL_PER_MONTH = 2000;    // $ per acceleration module / month
+const ACCEL_PER_MONTH = 2500;    // $ per acceleration module / month
 const UPFRONT_DISCOUNT = 0.05;   // 5% off if all 3 months paid upfront (ACH only)
 
 const CORE_MODULES = [
