@@ -27,7 +27,7 @@ const LEVELS = [
     money: "Cash only - no equity",
     color: "#C8452F",
     metrics: [
-      { label: "Commitment", value: "20+ hrs / week" },
+      { label: "Commitment", value: "10-15 hrs / week min" },
       { label: "Equity", value: "Not included" },
       { label: "Structure", value: "Project + retainer" },
     ],
